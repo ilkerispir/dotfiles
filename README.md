@@ -1,4 +1,4 @@
-# ahmet’s macOS Setup
+# ilker's macOS Setup
 
 ## Download Xcode
 
