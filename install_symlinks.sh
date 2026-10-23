@@ -25,29 +25,21 @@ link() {
 for f in .zshrc \
 	.Brewfile \
 	.vimrc \
-	.ideavimrc \
 	.editorconfig \
 	.gitconfig \
 	.git-commit-template \
 	.gitignore_global \
-	.kubectl_aliases \
 	.oh-my-posh.omp.yaml \
 	.claude.omp.yaml \
 	.tmux.conf; do
 	link "$SCRIPT_DIR/$f" "$HOME/$f"
 done
 
-# Vim config directory
-link "$SCRIPT_DIR/.vim" "$HOME/.vim"
-
 # Ghostty config file (macOS only)
 if [[ "$(uname -s)" == "Darwin" ]]; then
 	link "$SCRIPT_DIR/ghostty_config" \
 		"$HOME/Library/Application Support/com.mitchellh.ghostty/config"
 fi
-
-# karabiner
-link "$SCRIPT_DIR/karabiner.json" "$HOME/.config/karabiner/karabiner.json"
 
 # Claude config files (symlink files preserving directory structure, skills
 # are handled separately below)

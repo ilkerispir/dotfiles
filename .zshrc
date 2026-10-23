@@ -235,9 +235,6 @@ eval "$(oh-my-posh init zsh --config ~/.oh-my-posh.omp.yaml)"
 # use system paths (e.g. /etc/paths.d/)
 # [[ -f "/usr/libexec/path_helper" ]] && eval "$(/usr/libexec/path_helper -s)"
 
-# go tools
-PATH="$HOME/gotools/bin:$PATH"
-
 # overwrite macOS utils with coreutils
 PATH="$HOMEBREW_PREFIX/opt/coreutils/libexec/gnubin:$PATH"
 PATH="$HOMEBREW_PREFIX/opt/gawk/libexec/gnubin:$PATH"
@@ -248,11 +245,7 @@ PATH="$HOMEBREW_PREFIX/opt/gawk/libexec/gnubin:$PATH"
 # python: replace system python
 PATH="$HOMEBREW_PREFIX/opt/python/libexec/bin:$PATH"
 
-# kubectl aliases
-[ -f ~/.kubectl_aliases ] && source <(cat ~/.kubectl_aliases | sed -r 's/(kubectl.*) --watch/watch \1/g')
-
 # Add various paths
-PATH="${SELF_DIR}/bin:${PATH}"
 PATH="${KREW_ROOT:-$HOME/.krew}/bin:${PATH}"
 PATH="${HOME}/go/bin:${PATH}"
 PATH="${HOME}/.cargo/bin:${PATH}"

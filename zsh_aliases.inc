@@ -39,11 +39,9 @@ alias no='yes n'
 alias cl='clear;clear'
 alias page='less -S'
 alias start=open
-alias ccat='ccat --bg=dark'
 alias c.='code .'
 alias code.='code .'
 alias fd='fd --no-ignore'
-alias ag='ag --hidden'
 alias yl='jless --yaml'
 alias yless='jless --yaml'
 
@@ -54,16 +52,6 @@ alias drb='docker run --rm -i -t --entrypoint sh'
 alias drr='docker run --rm -i -t -p 8080:8080 -e PORT=8080'
 alias dx='docker exec -i -t'
 alias db='docker build -t'
-
-# google cloud platform
-alias gcurl='curl -k --header "Authorization: Bearer $(gcloud auth print-access-token -q)"'
-alias runcurl='curl -k --header "Authorization: Bearer $(gcloud auth print-identity-token -q)"'
-alias gke='gcloud container clusters'
-alias gkedel='gcloud container clusters delete -q --async'
-alias gce='gcloud compute instances'
-alias gcssh='gcloud compute ssh'
-alias runlist='gcloud run services list --platform=managed'
-alias rundel='gcloud run services delete -q --platform=managed --region us-central1'
 
 # git aliases
 alias gc='_git_dbg commit -v'
@@ -101,9 +89,6 @@ alias prme='prl --author @me'
 alias ghb='gh browse'
 
 # misc shortcuts
-alias tunneloff='networksetup -setsocksfirewallproxystate Wi-Fi off && echo Tunnel is turned off.'
-alias tunnel='networksetup -setsocksfirewallproxystate Wi-Fi on && ssh -N -p 22 -D 8080 mine; networksetup -setsocksfirewallproxystate Wi-Fi off; echo Tunnel is turned off.'
 # alias ffmpeg='docker run --rm -i -t -v $PWD:/tmp/workdir jrottenberg/ffmpeg'
 # alias youtube-dl='docker run --rm -i -t -v $PWD:/data vimagick/youtube-dl'
 alias decodecert='openssl x509 -in /dev/stdin -text -noout'
-alias assume='source $(brew --prefix)/bin/assume'

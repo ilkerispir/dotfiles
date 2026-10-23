@@ -43,6 +43,4 @@ Done. Remaining manual steps:
   - Open a new terminal (zinit installs its plugins on first start).
   - Sign in to 1Password, then create or restore SSH and signing keys.
   - Install company managed apps through MDM (GlobalProtect, Okta Verify, Drata).
-  - iTerm2: Preferences > General > Settings, load from this repo's plist folder.
-  - See README.md for Rectangle, Karabiner and VS Code sync.
 EOF
