@@ -1,0 +1,7 @@
+.gnupg/.gpg-*-migrated
+.gnupg/**.kbx*
+*.swp
+.audio/
+.claude/settings.local.json
+.vim/.netrwhist
+.config/opencode/opencode.jsonc

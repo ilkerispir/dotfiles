@@ -5,10 +5,18 @@ alias find='gfind'
 alias xargs='gxargs'
 alias stat='gstat'
 
+# Tool overrides
+alias watch='viddy'
+
 # convenience aliases
+local LS=ls
+if [[ -z ${commands[gls]} ]]; then
+    LS='gls'
+fi
+
 alias cd..='cd ..'
 alias cd...='cd ../..'
-alias ls='ls --color'
+alias ls="$LS --color=auto"
 alias l='ls -lF'
 alias dir='ls'
 alias la='ls -lah'
@@ -16,7 +24,7 @@ alias ll='ls -l'
 alias ls-l='ls -l'
 alias j='jobs'
 alias time='gtime --format "$(tput setab 255)$(tput setaf 160)took %es.$(tput sgr0)"'
-alias vi='vim'
+# alias vi='lvim'
 alias grep='grep -E --color'
 alias ping='ping -c 3'
 alias pstree='pstree -w'
@@ -25,7 +33,6 @@ alias p='pbpaste'
 alias pt='pbpaste | tee'
 alias t='tee'
 alias slp='/System/Library/CoreServices/"Menu Extras"/User.menu/Contents/Resources/CGSession -suspend'
-alias bd='bg && disown %1'
 alias pg='ps ax | grep -v "grep" | grep'
 alias o='less'
 alias no='yes n'
@@ -37,6 +44,8 @@ alias c.='code .'
 alias code.='code .'
 alias fd='fd --no-ignore'
 alias ag='ag --hidden'
+alias yl='jless --yaml'
+alias yless='jless --yaml'
 
 # cloud stuff
 alias d='docker'
@@ -57,34 +66,44 @@ alias runlist='gcloud run services list --platform=managed'
 alias rundel='gcloud run services delete -q --platform=managed --region us-central1'
 
 # git aliases
-alias gc='_git_dbg commit -S -v -s'
+alias gc='_git_dbg commit -v'
 alias gdc='_git_dbg diff --cached'
-alias git='hub'
-alias gpp='_git_dbg push ahmetb HEAD && hub pull-request --browse'
-alias gpah='_git_dbg push ahmetb HEAD'
-alias glah='_git_dbg pull ahmetb HEAD'
-alias gfah='_git_dbg fetch ahmetb'
+alias gpp='_git_dbg push ilkerispir HEAD && gh pr create --web'
+alias gpah='_git_dbg push ilkerispir HEAD'
+alias glah='_git_dbg pull ilkerispir HEAD'
+alias gfah='_git_dbg fetch ilkerispir'
 alias glom='_git_dbg pull origin master --tags'
 alias gloh='_git_dbg pull origin HEAD --tags'
 alias grom='_git_dbg rebase origin/master'
 alias gpoh='_git_dbg push origin HEAD'
+alias gcae='_git_dbg commit --amend --edit'
 alias gbv="git for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'"
-unalias grv
+alias gitroot='cd $(git rev-parse --show-toplevel)'
 
 # kubectl
+alias kcx='kubectx'
+alias kns='kubens'
 alias kx='kubectl explain'
 alias pka='pbpaste | kubectl apply -f-'
 alias pkr='pbpaste | kubectl delete -f-'
 alias pkd='pbpaste | kubectl describe -f-'
 alias kpl='kubectl plugin'
 alias krew_install_clipboard='kubectl krew install --manifest <(pbpaste)'
-alias kk='kubectl krew'
-alias kexec='kubectl exec --stdin --tty'
+alias kk='kubectl klock --hide-deleted=60s'
+
+# github aliases
+alias prc='gh pr create --web'
+alias prd='gh pr create --draft --web'
+alias prw='gh pr view --web'
+alias prco='gh pr checkout'
+alias prl='gh pr list -s all'
+alias prme='prl --author @me'
+alias ghb='gh browse'
 
 # misc shortcuts
 alias tunneloff='networksetup -setsocksfirewallproxystate Wi-Fi off && echo Tunnel is turned off.'
 alias tunnel='networksetup -setsocksfirewallproxystate Wi-Fi on && ssh -N -p 22 -D 8080 mine; networksetup -setsocksfirewallproxystate Wi-Fi off; echo Tunnel is turned off.'
 # alias ffmpeg='docker run --rm -i -t -v $PWD:/tmp/workdir jrottenberg/ffmpeg'
 # alias youtube-dl='docker run --rm -i -t -v $PWD:/data vimagick/youtube-dl'
-alias goclone='$HOME/workspace/goclone/goclone'
-alias decodecert='openssl x509 -in /dev/stdin -text'
+alias decodecert='openssl x509 -in /dev/stdin -text -noout'
+alias assume='source $(brew --prefix)/bin/assume'

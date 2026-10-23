@@ -2,18 +2,16 @@ log() {
   echo >&2 "[~/.zshrc] $(tput setaf 245)$*$(tput sgr0)"
 }
 
-brew() {
-  sudo chown -R "$(whoami)" /usr/local/bin /usr/local/etc /usr/local/sbin /usr/local/share /usr/local/share/doc
-  chmod u+w /usr/local/bin /usr/local/etc /usr/local/sbin /usr/local/share /usr/local/share/doc
-  command "brew" $@
-}
-
 retry() {
   while true; do $@; sleep 1; done
 }
 
 til() {
   while true; do $@; if [ $? -eq 0 ]; then break; fi; sleep 1; done
+}
+
+tilfails() {
+  while $@; do; sleep 1; done
 }
 
 mcd() {
@@ -47,7 +45,7 @@ measure() {
   local ts=$(date +%s%N)
   $@
   local tt=$((($(date +%s%N) - $ts)/1000000))
-  echo "time took: $tt ms." >&2
+  echo "$(tput setaf 245)\"${1}\" took $tt ms.$(tput sgr0)" >&2
 }
 
 _git_dbg() {
@@ -116,4 +114,17 @@ demo() {
     PS1=$(tput setaf 2)\$\ $(tput sgr0)
     export PS1
     clear
+}
+
+sum() {
+   awk '{ sum += $1; } END { print sum; }'
+}
+
+isolatectx() {
+  tmp="$(mktemp)"
+  KUBECONFIG=$HOME/.kube/config kubectl config view --minify --flatten --context="$1" > "$tmp"
+  echo "$(tput setab 3; tput setaf 1)Starting new shell only with context \"$1\"...$(tput sgr0)"
+  env KUBECONFIG="$tmp" $SHELL
+  # the flattened kubeconfig contains credentials, do not leave it behind
+  rm -f "$tmp"
 }

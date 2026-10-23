@@ -2,6 +2,22 @@
 IFS=$'\n\t'
 set -xeou pipefail
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BACKUP_DIR="$HOME/.dotfiles_backup/$(date +%Y%m%d-%H%M%S)"
+readonly BACKUP_DIR
+
+# link <source> <target>: symlink target to source. A pre-existing real file or
+# directory is moved into BACKUP_DIR instead of being deleted.
+link() {
+	local src="$1" target="$2"
+	mkdir -p "$(dirname "$target")"
+	if [ -L "$target" ]; then
+		unlink "$target"
+	elif [ -e "$target" ]; then
+		mkdir -p "$BACKUP_DIR"
+		mv "$target" "$BACKUP_DIR/$(basename "$target")"
+	fi
+	ln -sf "$src" "$target"
+}
 
 # suppress shell login message
 [[ ! -e ~/.hushlogin ]] && touch ~/.hushlogin
@@ -9,40 +25,48 @@ readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 for f in .zshrc \
 	.Brewfile \
 	.vimrc \
-    .audio \
+	.ideavimrc \
 	.editorconfig \
 	.gitconfig \
+	.git-commit-template \
 	.gitignore_global \
 	.kubectl_aliases \
+	.oh-my-posh.omp.yaml \
+	.claude.omp.yaml \
 	.tmux.conf; do
-	if [ -e "$HOME/$f" ]; then rm "$HOME/$f"; fi
-	ln -sf "$SCRIPT_DIR/$f" "$HOME/$f"
+	link "$SCRIPT_DIR/$f" "$HOME/$f"
 done
 
-# gnupg
-if [ -f "$HOME/.gnupg" ] && [ ! -L "$HOME/.gnupg" ];then
-	echo "$HOME/.gnupg is not a symlink. Delete it manually."
-	exit 1
-else
-	[ -L "$HOME/.gnupg" ] && unlink "$HOME/.gnupg"
-	ln -sf "$SCRIPT_DIR/.gnupg" "$HOME/.gnupg"
-	# make directory unreadable by others
-	chmod -R o-rx "$SCRIPT_DIR/.gnupg"
-	# make symlink available only to current user
-	chmod 700 "$HOME/.gnupg"
+# Vim config directory
+link "$SCRIPT_DIR/.vim" "$HOME/.vim"
+
+# Ghostty config file (macOS only)
+if [[ "$(uname -s)" == "Darwin" ]]; then
+	link "$SCRIPT_DIR/ghostty_config" \
+		"$HOME/Library/Application Support/com.mitchellh.ghostty/config"
 fi
 
-# install zsh-completions
-ZSH_COMPLETIONS=~/.oh-my-zsh/custom/plugins/zsh-completions
-[[ -d "$ZSH_COMPLETIONS" ]] || git clone \
-	https://github.com/zsh-users/zsh-completions "$ZSH_COMPLETIONS"
-
-# install iterm2 shell integration (for touchbar support etc)
-#   see:  https://github.com/caskroom/homebrew-cask/issues/39439
-curl -L https://iterm2.com/misc/install_shell_integration.sh | bash
-
 # karabiner
-kj=~/.config/karabiner/karabiner.json
-if [ -e "$kj" ]; then rm -- "$kj"; fi
-mkdir -p "$(dirname "$kj")"
-ln -sf "${SCRIPT_DIR}/karabiner.json" ~/.config/karabiner/karabiner.json
+link "$SCRIPT_DIR/karabiner.json" "$HOME/.config/karabiner/karabiner.json"
+
+# Claude config files (symlink files preserving directory structure, skills
+# are handled separately below)
+while IFS= read -r -d '' f; do
+	relative="${f#$SCRIPT_DIR/.claude/}"
+	case "$relative" in
+		skills/*) continue ;;
+	esac
+	link "$f" "$HOME/.claude/$relative"
+done < <(find "$SCRIPT_DIR/.claude" -type f -print0)
+
+# Claude skills: link each skill individually, ~/.claude/skills also holds
+# skills managed elsewhere (e.g. synced/) that must not be touched.
+mkdir -p "$HOME/.claude/skills"
+for s in "$SCRIPT_DIR"/.claude/skills/*; do
+	link "$s" "$HOME/.claude/skills/$(basename "$s")"
+done
+
+if [ -d "$BACKUP_DIR" ]; then
+	echo "Existing files were backed up to $BACKUP_DIR"
+fi
+echo "DONE"

@@ -1,0 +1,18 @@
+{
+  "model": "sonnet",
+  "effortLevel": "xhigh",
+  "modelSettings": {
+    "claude-sonnet-5": {
+      "effortLevel": "high"
+    },
+    "claude-fable-5": {
+      "effortLevel": "xhigh"
+    }
+  },
+  "theme": "dark",
+  "statusLine": {
+    "type": "command",
+    "command": "oh-my-posh claude --config ~/.claude.omp.yaml",
+    "padding": 0
+  }
+}

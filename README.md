@@ -2,7 +2,7 @@
 
 ## Download Xcode
 
-For google, go/xcode. This will take a lot of time, so start with this.
+Install Xcode from the App Store. This will take a lot of time, so start with this.
 
 ## OS Settings
 
@@ -41,6 +41,7 @@ defaults write com.apple.finder NewWindowTarget -string "PfLo" && \
   defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}"
 
 chflags nohidden ~/Library                               # Unhide ~/Library
+defaults write com.apple.screencapture location ~/Downloads # default screenshot path
 
 # disable smart quotes and dashes
 defaults write 'Apple Global Domain' NSAutomaticDashSubstitutionEnabled 0
@@ -50,7 +51,11 @@ defaults write 'Apple Global Domain' NSAutomaticPeriodSubstitutionEnabled 0
 
 ## Shell
 
-Install oh-my-zsh: https://github.com/robbyrussell/oh-my-zsh
+- Make sure zsh is installed.
+- `.zshrc` bootstraps [zinit](https://github.com/zdharma-continuum/zinit) on
+  first launch (it clones the repo over HTTPS), so the first shell start takes
+  a while and needs network access.
+- The prompt is oh-my-posh (`.oh-my-posh.omp.yaml`), installed via `.Brewfile`.
 
 ## Package manager
 
@@ -106,22 +111,20 @@ pip install virtualenvwrapper
   - Set paste key to <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd>
 - **fzf** completion scripts:
 
-      "$HOMEBREW"/opt/fzf/install
+      "$HOMEBREW_PREFIX"/opt/fzf/install
 
-- **minikube** xhyve driver:
+- **vim** plugins (vim-go + gopls):
 
-      # minikube uses xhyve, which requires privileged access to the hypervisor
-      sudo chown root:wheel /usr/local/opt/docker-machine-driver-xhyve/bin/docker-machine-driver-xhyve
-      sudo chmod u+s /usr/local/opt/docker-machine-driver-xhyve/bin/docker-machine-driver-xhyve
+      vim +PlugInstall +GoInstallBinaries +qall
 
 ## Settings Sync
 
 - Clone this repo and run `install_symlinks.sh`
+    - Existing files (e.g. `~/.zshrc`, `~/.claude/settings.json`) are moved to
+      `~/.dotfiles_backup/<timestamp>/` before being replaced by symlinks.
     - Open a new terminal to take effect.
 - iTerm2->Preferences->Load Preferences From: com.googlecode.iterm2.plist directory.
     - Restart iTerm2.
-
-- For GPG instructions, follow [.gnupg/README](.gnupg/README) file.
 
 - VSCode:
   - Install "Settings Sync" extension and reload.
@@ -134,9 +137,15 @@ pip install virtualenvwrapper
 
 ## Git Setup
 
-Run:
+Identity, pager, diff colours and credential helpers are in `.gitconfig`
+(symlinked to `~/.gitconfig` by `install_symlinks.sh`). Log in with the GitHub
+CLI so HTTPS credentials work:
 
-    ./git_setup.sh
+    gh auth login
+
+Commit signing is not enabled by default. To sign commits, set up a key
+(`gitsign` is installed via `.Brewfile`, or use GPG/SSH signing) and add
+`signingkey` and `commit.gpgsign` to `.gitconfig`.
 
 Generate key with a password:
 
