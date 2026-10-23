@@ -1,5 +1,16 @@
 # ilker's macOS Setup
 
+## New Mac quick start
+
+1. Sign in to the Mac and install Homebrew from https://brew.sh.
+2. Clone this repo (`git clone https://github.com/ilkerispir/dotfiles ~/workspace/dotfiles`).
+3. Run `~/workspace/dotfiles/bootstrap.sh`. It installs the Xcode command line
+   tools, logs in to GitHub, runs `brew bundle` (`.Brewfile`), links the
+   dotfiles (`install_symlinks.sh`) and applies `macos_defaults.sh`.
+4. Open a new terminal, then follow the manual steps it prints.
+
+The sections below describe the same steps in detail.
+
 ## Download Xcode
 
 Install Xcode from the App Store. This will take a lot of time, so start with this.
