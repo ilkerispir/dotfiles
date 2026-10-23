@@ -45,14 +45,12 @@ GOPKGS=(
 	github.com/golang/dep/cmd/dep \
 	github.com/golang/protobuf/protoc-gen-go \
 	github.com/spf13/cobra/cobra \
-	github.com/ahmetb/govvv \
 
 	# misc
 	github.com/shurcooL/markdownfmt \
 	github.com/cpuguy83/go-md2man \
 	golang.org/x/vgo \
-	github.com/rakyll/hey \
-	github.com/ahmetb/iamutil
+	github.com/rakyll/hey
 	)
 
 GOPATH="$GOTOOLS" go get -u "${GOPKGS[@]}"
