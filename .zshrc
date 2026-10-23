@@ -18,6 +18,22 @@ setopt HIST_SAVE_NO_DUPS        # Don't write duplicate entries
 # setopt HIST_REDUCE_BLANKS       # Remove superfluous blanks before recording entry
 setopt HIST_IGNORE_SPACE        # Do not record commands with leading spaces
 
+# Keep likely secrets (AWS keys, bearer tokens, password/token assignments, common
+# API token prefixes) out of ~/.zsh_history. Returning 2 keeps the line in this
+# session's history for recall but never writes it to the history file.
+zshaddhistory() {
+  emulate -L zsh
+  setopt local_options no_case_match
+  local line="${1%%$'\n'}"
+  if [[ $line =~ '(AKIA|ASIA)[A-Z0-9]{16}' ||
+        $line =~ 'bearer +[a-z0-9._~+/=-]{10,}' ||
+        $line =~ '(password|passwd|secret|token|api[_-]?key|access[_-]?key)[a-z_]*=[^ ]' ||
+        $line =~ 'ghp_[a-z0-9]{20,}|github_pat_|xox[baprs]-|sk-[a-z0-9]{20,}' ]]; then
+    return 2
+  fi
+  return 0
+}
+
 # Directory navigation
 setopt AUTO_PUSHD               # Push the old directory onto the stack on cd
 setopt PUSHD_IGNORE_DUPS        # Do not store duplicates in the stack
@@ -314,13 +330,21 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 export GEM_HOME="$HOME/.gem"
 export PATH="$GEM_HOME/bin:$HOMEBREW_PREFIX/opt/ruby/bin:$PATH"
 
-# nvm
+# nvm, loaded on first use of one of these commands (it adds noticeable startup time)
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
-# Angular CLI completion
-command -v ng > /dev/null && source <(ng completion script)
+_nvm_lazy_load() {
+  unset -f nvm node npm npx yarn ng
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+  # Angular CLI completion, only available once nvm put ng on the PATH
+  command -v ng > /dev/null && source <(ng completion script)
+}
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+  for _cmd in nvm node npm npx yarn ng; do
+    eval "$_cmd() { _nvm_lazy_load; $_cmd \"\$@\"; }"
+  done
+  unset _cmd
+fi
 
 # Antigravity
 export PATH="$HOME/.antigravity/antigravity/bin:$HOME/.antigravity-ide/antigravity-ide/bin:$PATH"

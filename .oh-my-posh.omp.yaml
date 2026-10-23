@@ -20,11 +20,22 @@ blocks:
     type: kubectl
     style: powerline
     foreground_templates:
-    - "{{if or (contains \"prod\" .Context) (contains \"grid\" .Context) }}#FFCDD2{{end}}"
-    - "{{if hasPrefix \"ei\" .Context }}#FFFFFF{{end}}"
+    - "{{if or (contains \"prod\" .Context) (contains \"prd\" .Context) }}#FFCDD2{{end}}"
     background_templates:
-    - "{{if or (contains \"prod\" .Context) (contains \"grid\" .Context) }}#B71C1C{{end}}"
-    - "{{if hasPrefix \"ei\" .Context }}#30336b{{end}}"
+    - "{{if or (contains \"prod\" .Context) (contains \"prd\" .Context) }}#B71C1C{{end}}"
+  - properties:
+      cache_duration: none
+      display_default: false
+    template: " \ue7ad {{ .Profile }}{{ if .Region }}@{{ .Region }}{{ end }} "
+    foreground: "#232F3E"
+    powerline_symbol: "\ue0b0"
+    background: "#FF9900"
+    type: aws
+    style: powerline
+    background_templates:
+    - "{{ if or (contains \"prod\" .Profile) (contains \"prd\" .Profile) }}#B71C1C{{ end }}"
+    foreground_templates:
+    - "{{ if or (contains \"prod\" .Profile) (contains \"prd\" .Profile) }}#FFCDD2{{ end }}"
   - properties:
       branch_max_length: 35
       cache_duration: none
